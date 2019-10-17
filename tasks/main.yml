@@ -25,9 +25,9 @@
   with_items: "{{ m7s_labels }}"
   register: nodes_absent
 
-- name: iterate for each node and remove label
-  include: remove-node-label.yml
-  vars:
-    node: "{{ item }}"
-  with_items: 
-   - "{{ nodes_absent }}"
+#- name: iterate for each node and remove label
+#  include: remove-node-label.yml
+#  vars:
+#    node: "{{ item }}"
+#  with_items: 
+#   - "{{ nodes_absent }}"
