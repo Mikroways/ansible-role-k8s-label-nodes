@@ -1,0 +1,33 @@
+---
+
+- name: find labels who doesnt exist and must
+  k8s_facts:
+    kind: Node
+    label_selectors:
+      - "{{ item.key }} = {{ item.value }}"
+  with_items: "{{ m7s_labels }}"
+  when: item.state = 'present'
+  register: nodes_present
+
+- name: iterate for each node and add label
+  include: node-label.yml
+  vars:
+    node: "{{ item }}"
+  with_items: 
+   - "{{ nodes_present }}"
+
+- name: find labels who exist and must not
+  k8s_facts:
+    kind: Node
+    label_selectors:
+      - "{{ item.key }} = {{ item.value }}"
+  with_items: "{{ m7s_labels }}"
+  when: item.state = 'absent'
+  register: nodes_absent
+
+- name: iterate for each node and remove label
+  include: remove-node-label.yml
+  vars:
+    node: "{{ item }}"
+  with_items: 
+   - "{{ nodes_absent }}"

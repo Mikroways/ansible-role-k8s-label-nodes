@@ -1,0 +1,12 @@
+---
+
+- set_fact:
+      labels_dict:  "{{ (labels_dict|default({})) | combine({item.item.key: item.item.value}) }}"
+  when:
+    - item.resources is defined
+    - item.resources | length > 0
+  with_items:
+    - "{{ node.results }}"
+
+
+# not implemented yet
