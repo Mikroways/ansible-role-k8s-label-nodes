@@ -8,6 +8,9 @@
   with_items:
     - "{{ node.results | default([]) }}"
 
+- debug:
+    msg: "{{ labels_dict }}"
+
 - name: in a node vars not included
   k8s:
     state: present
