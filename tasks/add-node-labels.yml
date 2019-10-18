@@ -1,0 +1,11 @@
+---
+
+- set_fact:
+    labels_dict:  "{{ (labels_dict|default({})) | combine({ item.key: item.value }) }}"
+  when: item.state == 'present'
+  with_items: "{{ labels }}"
+
+- import_tasks: path-label.yml
+  vars:
+    node: "{{ node }}"
+    labels_dict: "{{ labels_dict }}"

@@ -1,40 +1,19 @@
 ---
 
-- name: find labels who exist and must not
-  k8s_facts:
-    kind: Node
-    label_selectors:
-      - "{{ item.key }} = {{ item.value }}"
-  when: item.state == "absent"
-  with_items: 
-   - "{{ m7s_labels }}"
-  register: nodes_absent
-
-- set_fact:
-    nodes_absent: "{{ (nodes_absent|default([])) }}"
-
 - name: iterate for each node and remove label
-  include: remove-node-label.yml
+  include: remove-node-labels.yml
   vars:
     node: "{{ item }}"
-  with_items: 
-   - "{{ nodes_absent }}"
-
-- name: find labels who doesnt exist and must
-  k8s_facts:
-    kind: Node
-    label_selectors:
-      - "{{ item.key }} = {{ item.value }}"
-  when: item.state == "present"
-  loop: "{{ m7s_labels }}"
-  register: nodes_present
-
-- set_fact:
-    nodes_present: "{{ (nodes_present|default([])) }}"
+    labels: "{{ hostvars[item]['m7s_labels'] }}"
+  when: hostvars[item]['m7s_labels'] is defined
+  with_items: "{{ groups['all'] }}"
+  run_once: true
 
 - name: iterate for each node and add label
-  include: node-label.yml
+  include: add-node-labels.yml
   vars:
     node: "{{ item }}"
-  with_items: 
-   - "{{ nodes_present }}"
+    labels: "{{ hostvars[item]['m7s_labels'] }}"
+  when: hostvars[item]['m7s_labels'] is defined
+  with_items: "{{ groups['all'] }}"
+  run_once: true

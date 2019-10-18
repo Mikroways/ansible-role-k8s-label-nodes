@@ -1,0 +1,18 @@
+---
+
+- debug:
+    msg: "{{ node }}"
+
+
+- debug:
+    msg: "{{ labels_dict }}"
+
+- name: patch label
+  k8s:
+    state: present
+    merge_type: strategic-merge
+    kind: Node
+    name: "{{ node }}"
+    definition:
+      metadata:
+        labels: "{{ labels_dict }}"
