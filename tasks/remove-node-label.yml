@@ -1,12 +1,22 @@
 ---
 
 - set_fact:
-      labels_dict:  "{{ (labels_dict|default({})) | combine({item.item.key: item.item.value}) }}"
+      labels_dict:  "{{ (labels_dict|default({})) | combine({item.item.key: \"None\""}) }}"
   when:
     - item.resources is defined
     - item.resources | length > 0
   with_items:
     - "{{ node.results }}"
 
-
-# not implemented yet
+- name: in a node vars not included
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Node
+      metadata:
+        name: "{{ inventory_hostname }}"
+        labels:
+          $path: delete
+          "{{ labels_dict }}"
+  when: labels_dict is defined
