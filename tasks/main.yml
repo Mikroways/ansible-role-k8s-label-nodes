@@ -6,8 +6,11 @@
     label_selectors:
       - "{{ item.key }} = {{ item.value }}"
   when: item.state == "present"
-  with_items: "{{ m7s_labels }}"
+  loop: "{{ m7s_labels }}"
   register: nodes_present
+
+- set_fact:
+    nodes_present: "{{ (nodes_present|default([])) }}"
 
 - name: iterate for each node and add label
   include: node-label.yml
@@ -22,12 +25,16 @@
     label_selectors:
       - "{{ item.key }} = {{ item.value }}"
   when: item.state == "absent"
-  with_items: "{{ m7s_labels }}"
+  with_items: 
+   - "{{ m7s_labels }}"
   register: nodes_absent
+
+- set_fact:
+    nodes_absent: "{{ (nodes_absent|default([])) }}"
 
 - name: iterate for each node and remove label
   include: remove-node-label.yml
   vars:
     node: "{{ item }}"
   with_items: 
-    - "{{ nodes_absent }}"
+   - "{{ nodes_absent }}"
