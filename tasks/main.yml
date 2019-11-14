@@ -7,6 +7,7 @@
     labels: "{{ hostvars[item]['m7s_labels'] }}"
   when: hostvars[item]['m7s_labels'] is defined
   with_items: "{{ groups['all'] }}"
+  delegate_to: "{{ groups['kube-master'][0] }}"
   run_once: true
 
 - name: iterate for each node and add label
@@ -16,4 +17,5 @@
     labels: "{{ hostvars[item]['m7s_labels'] }}"
   when: hostvars[item]['m7s_labels'] is defined
   with_items: "{{ groups['all'] }}"
+  delegate_to: "{{ groups['kube-master'][0] }}"
   run_once: true
