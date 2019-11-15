@@ -1,7 +1,7 @@
 ---
 
 galaxy_info:
-  role_name: m7s_label_nodes
+  role_name: m7s_k8s_label_nodes
   author: 'Matias Ferrigno'
   description: 'labeling nodes (add and remove)'
   company: 'Mikroways'
@@ -23,4 +23,4 @@ galaxy_info:
     - "kubernetes"
 
 dependencies:
-- mikroways.m7s_base
+- mikroways.m7s_k8s_base
